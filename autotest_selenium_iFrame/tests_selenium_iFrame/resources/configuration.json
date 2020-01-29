@@ -1,0 +1,8 @@
+{
+  "browser": "Chrome",
+  "download_dir": "default",
+  "base_url": "http://the-internet.herokuapp.com/iframe",
+  "fluent_wait_time": 10,
+  "error_wait_time": 10,
+  "poll_frequency": 1
+}

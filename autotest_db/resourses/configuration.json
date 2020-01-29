@@ -1,0 +1,8 @@
+{
+  "log_filename": "database.log",
+  "log_format": "%(message)s",
+  "host": "localhost",
+  "user": "",
+  "password": "",
+  "database": ""
+}
