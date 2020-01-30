@@ -1,0 +1,68 @@
+# coding=utf-8
+import os
+import threading
+from datetime import datetime
+from PIL import Image
+from vlogging import VisualRecord
+from framework.browser.browser import Browser
+from framework.constants import screenshots
+from framework.utils.datetime_util import DatetimeUtil
+from framework.utils.logger import Logger
+
+
+class Screenshooter:
+    __session_dir = None
+    __screen_number = screenshots.NUMBER_OF_FIRST_SCREEN
+    __screen_file_name = ''
+    __screen_dir = os.path.join(os.getcwd(), screenshots.PATH_TO_SCREENSHOTS)
+
+    @staticmethod
+    def set_session_screen_dir():
+        lock = threading.Lock()
+        lock.acquire()
+        try:
+            if not os.path.exists(Screenshooter.__screen_dir):
+                Logger.info("Creating a directory for storing screenshots: " + Screenshooter.__screen_dir)
+                os.makedirs(Screenshooter.__screen_dir)
+
+            new_screen_path = os.path.join(
+                Screenshooter.__screen_dir,
+                "Session_" + DatetimeUtil.get_str_datetime(screenshots.FORMAT_DATETIME_FOR_SCREEN))
+
+            if Screenshooter.__session_dir is None and not os.path.exists(new_screen_path):
+                Screenshooter.__session_dir = new_screen_path
+            else:
+                Screenshooter.__session_dir = new_screen_path + "." + str(datetime.now().microsecond)
+
+            Logger.info("Creating a directory " + new_screen_path)
+            os.makedirs(Screenshooter.__session_dir)
+        finally:
+            lock.release()
+
+    @staticmethod
+    def get_screen_file_name():
+        return Screenshooter.__screen_file_name
+
+    @staticmethod
+    def get_new_screen_file_name(file_format=screenshots.FILE_FORMAT_PNG):
+        scr_number = str(Screenshooter.__screen_number)
+        Screenshooter.__screen_number += 1
+        Screenshooter.__screen_file_name = "Screenshot_" + scr_number + file_format
+        return Screenshooter.__screen_file_name
+
+    @staticmethod
+    def get_screenshot_dir():
+        return Screenshooter.__screen_dir
+
+    @staticmethod
+    def get_screen_session_dir():
+        return Screenshooter.__session_dir
+
+    @staticmethod
+    def take_screenshot():
+        screen_name = Screenshooter.get_new_screen_file_name()
+        save_screen_path = os.path.join(Screenshooter.__session_dir, screen_name)
+        Logger.info("Screenshot capture to file " + screen_name)
+        Browser.get_browser().get_driver().save_screenshot(save_screen_path)
+        result_image = Image.open(save_screen_path)
+        Logger.info(VisualRecord(screen_name, result_image))
