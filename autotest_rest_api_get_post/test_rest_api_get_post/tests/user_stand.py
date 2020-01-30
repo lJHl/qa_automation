@@ -1,0 +1,2 @@
+class UserStand:
+    USER = None
