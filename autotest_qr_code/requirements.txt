@@ -1,0 +1,11 @@
+imagehash>=4
+allure-pytest>=2.8.6
+cloudinary>=1.19
+pillow>=6.2.1
+PyHamcrest>=1.9.0
+pytest>=5.3.1
+requests>=2.18.4
+selenium>=3.14.0
+visual-logging>=1.0
+webdriver-manager>=2.3
+pyzbar
